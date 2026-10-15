@@ -1,8 +1,8 @@
 # Project state
 
 ```text
-LAST_COMPLETED_PHASE = 6_SINGLE_FINAL_EVALUATION
-NEXT_PHASE = 7_ERRORS_UNCERTAINTY_ECONOMICS
+LAST_COMPLETED_PHASE = 8_MODEL_CARD_AND_RELEASE
+NEXT_PHASE = NONE (v1.0.0)
 VALIDITY_SCOPE = APS_COMPONENT_FAILURE_CLASSIFICATION
 PRIMARY_METRIC = OFFICIAL_COST (FP=10, FN=500)
 CV_PROTOCOL = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
@@ -24,5 +24,5 @@ POST_HOLDOUT_TUNING = FALSE
 | 4 · Candidates and missingness strategy | Done | [04](04_candidates.md): LightGBM + indicators 34,600 (weak edge, within fold spread) |
 | 5 · Controlled tuning and threshold | Done | [05](05_tuning.md): trial 4, 34,440; seed spread 33,220–38,480 |
 | 6 · Single final evaluation | Done | [06](06_final_evaluation.md): cost 11,540 (95 % CI 7,940–15,661), recall 95.7 % |
-| 7 · Errors, uncertainty, cost economics | Pending | — |
-| 8 · Model Card, artifacts, release | Pending | — |
+| 7 · Errors, uncertainty, cost economics | Done | [07](07_errors_uncertainty_economics.md): saves 88–96 % for ratios 10:1–100:1 |
+| 8 · Model Card, artifacts, release | Done | [MODEL_CARD.md](../MODEL_CARD.md), [CHANGELOG](../CHANGELOG.md) |
