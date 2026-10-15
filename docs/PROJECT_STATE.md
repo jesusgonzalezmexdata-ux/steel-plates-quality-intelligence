@@ -1,13 +1,13 @@
 # Project state
 
 ```text
-LAST_COMPLETED_PHASE = 5_CONTROLLED_TUNING
-NEXT_PHASE = 6_SINGLE_FINAL_EVALUATION
+LAST_COMPLETED_PHASE = 6_SINGLE_FINAL_EVALUATION
+NEXT_PHASE = 7_ERRORS_UNCERTAINTY_ECONOMICS
 VALIDITY_SCOPE = APS_COMPONENT_FAILURE_CLASSIFICATION
 PRIMARY_METRIC = OFFICIAL_COST (FP=10, FN=500)
 CV_PROTOCOL = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 HOLDOUT = official test set, 16,000 rows, SHA256 2cdf6f7661c7b4c63333c93cdec36a3a82350176b604a2312cf82799fb2712f3
-HOLDOUT_STATUS = SEALED
+HOLDOUT_STATUS = CONSUMED_FINAL_EVALUATION
 HOLDOUT_LABEL_COUNTS_SEEN_AT_INTAKE = TRUE (disclosed; not used for any decision)
 HOLDOUT_USED_FOR_DECISIONS = FALSE
 POST_HOLDOUT_TUNING = FALSE
@@ -23,6 +23,6 @@ POST_HOLDOUT_TUNING = FALSE
 | 3 · Baseline and CV protocol | Done | [03](03_baseline.md): logistic regression 52,100 vs 500,000 trivial |
 | 4 · Candidates and missingness strategy | Done | [04](04_candidates.md): LightGBM + indicators 34,600 (weak edge, within fold spread) |
 | 5 · Controlled tuning and threshold | Done | [05](05_tuning.md): trial 4, 34,440; seed spread 33,220–38,480 |
-| 6 · Single final evaluation | Rules pre-registered | `src/aps_intel/final.py` committed before tuning finished; reservation file blocks re-runs |
+| 6 · Single final evaluation | Done | [06](06_final_evaluation.md): cost 11,540 (95 % CI 7,940–15,661), recall 95.7 % |
 | 7 · Errors, uncertainty, cost economics | Pending | — |
 | 8 · Model Card, artifacts, release | Pending | — |
