@@ -23,6 +23,6 @@ POST_HOLDOUT_TUNING = FALSE
 | 3 · Baseline and CV protocol | Done | [03](03_baseline.md): logistic regression 52,100 vs 500,000 trivial |
 | 4 · Candidates and missingness strategy | Done | [04](04_candidates.md): LightGBM + indicators 34,600 (weak edge, within fold spread) |
 | 5 · Controlled tuning and threshold | Next | 12 pre-declared configurations |
-| 6 · Single final evaluation | Pending | — |
+| 6 · Single final evaluation | Rules pre-registered | `src/aps_intel/final.py` committed before tuning finished; reservation file blocks re-runs |
 | 7 · Errors, uncertainty, cost economics | Pending | — |
 | 8 · Model Card, artifacts, release | Pending | — |
