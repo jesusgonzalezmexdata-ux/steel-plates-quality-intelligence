@@ -1,8 +1,8 @@
 # Project state
 
 ```text
-LAST_COMPLETED_PHASE = 4_CANDIDATES
-NEXT_PHASE = 5_CONTROLLED_TUNING
+LAST_COMPLETED_PHASE = 5_CONTROLLED_TUNING
+NEXT_PHASE = 6_SINGLE_FINAL_EVALUATION
 VALIDITY_SCOPE = APS_COMPONENT_FAILURE_CLASSIFICATION
 PRIMARY_METRIC = OFFICIAL_COST (FP=10, FN=500)
 CV_PROTOCOL = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
@@ -22,7 +22,7 @@ POST_HOLDOUT_TUNING = FALSE
 | 2 · Problem contract | Done | [02](02_problem_contract.md) |
 | 3 · Baseline and CV protocol | Done | [03](03_baseline.md): logistic regression 52,100 vs 500,000 trivial |
 | 4 · Candidates and missingness strategy | Done | [04](04_candidates.md): LightGBM + indicators 34,600 (weak edge, within fold spread) |
-| 5 · Controlled tuning and threshold | Next | 12 pre-declared configurations |
+| 5 · Controlled tuning and threshold | Done | [05](05_tuning.md): trial 4, 34,440; seed spread 33,220–38,480 |
 | 6 · Single final evaluation | Rules pre-registered | `src/aps_intel/final.py` committed before tuning finished; reservation file blocks re-runs |
 | 7 · Errors, uncertainty, cost economics | Pending | — |
 | 8 · Model Card, artifacts, release | Pending | — |
