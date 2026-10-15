@@ -28,6 +28,8 @@ OUT = Path("reports/analysis")
 FIG = Path("reports/figures")
 RATIOS = (10, 25, 50, 100)  # missed-failure cost / false-alarm cost; 50 is official
 BOOT, SEED = 2000, 42
+# Score bands for calibration: deciles are useless at 2 % prevalence (8 of 10 sit near zero).
+CALIBRATION_EDGES = [0, 0.001, 0.01, 0.05, 0.2, 0.5, 0.8, 0.95, 1]
 
 
 def _bootstrap(y, score, flag, n=BOOT, seed=SEED) -> dict:
@@ -79,9 +81,10 @@ def run(root: Path = ROOT) -> dict:
                                 flag_none_cost=int(COST_FP * r * yh.sum()), recall=round(c["tp"] / yh.sum(), 4),
                                 checks_per_1000=round(1000 * f.mean(), 2), **c))
 
-    bins = pd.qcut(sh, 10, duplicates="drop")
+    bins = pd.cut(sh, CALIBRATION_EDGES, include_lowest=True)
     calib = (pd.DataFrame(dict(score=sh, y=yh, bin=bins)).groupby("bin", observed=True)
-             .agg(mean_score=("score", "mean"), observed_rate=("y", "mean"), n=("y", "size")).reset_index(drop=True))
+             .agg(mean_score=("score", "mean"), observed_rate=("y", "mean"), n=("y", "size")).reset_index())
+    calib["bin"] = calib["bin"].astype(str)
 
     n_missing = Xh.isna().sum(axis=1).to_numpy()
     groups = dict(tp=flag & (yh == 1), fn=~flag & (yh == 1), fp=flag & (yh == 0), tn=~flag & (yh == 0))
@@ -141,7 +144,9 @@ def _figures(root, curve, threshold, calib, drivers):
     fig, ax = plt.subplots(figsize=(4.5, 4.5))
     ax.plot([0, 1], [0, 1], color="grey", lw=1)
     ax.plot(calib.mean_score, calib.observed_rate, "o-")
-    ax.set(xscale="symlog", yscale="symlog", xlabel="Mean score (decile)", ylabel="Observed failure rate",
+    for _, r in calib.iterrows():
+        ax.annotate(f"n={int(r.n)}", (r.mean_score, r.observed_rate), textcoords="offset points", xytext=(5, -10), fontsize=7)
+    ax.set(xlim=(0, 1), ylim=(0, 1), xlabel="Mean score (band)", ylabel="Observed failure rate",
            title="Holdout calibration")
     fig.tight_layout()
     fig.savefig(root / FIG / "calibration.png", dpi=120)
