@@ -54,3 +54,13 @@ def test_features_learn_only_from_fit_data():
     out = t.transform(test)
     assert "cd_000" not in out and "aa_000_isna" in out and "ab_000_isna" not in out
     assert out.loc[0, "ag_hist_total"] == 4.0 and out.loc[0, "n_missing"] == 1
+
+
+@pytest.mark.parametrize("ratio", [10, 25, 100])
+def test_threshold_is_optimal_for_other_cost_ratios(ratio):
+    rng = np.random.default_rng(ratio)
+    y = rng.random(400) < 0.05
+    score = np.round(rng.random(400) + 0.4 * y, 2)
+    t = cost_optimal_threshold(y, score, 10, 10 * ratio)
+    best = min(total_cost(y, score >= c, 10, 10 * ratio) for c in np.append(np.unique(score), np.inf))
+    assert total_cost(y, score >= t, 10, 10 * ratio) == best

@@ -8,9 +8,9 @@ COST_FN = 500   # missed APS failure
 BAYES_THRESHOLD = COST_FP / (COST_FP + COST_FN)  # optimal for calibrated probabilities
 
 
-def total_cost(y_true, flag) -> int:
+def total_cost(y_true, flag, cost_fp: int = COST_FP, cost_fn: int = COST_FN) -> int:
     y_true, flag = np.asarray(y_true).astype(bool), np.asarray(flag).astype(bool)
-    return int(COST_FP * (flag & ~y_true).sum() + COST_FN * (~flag & y_true).sum())
+    return int(cost_fp * (flag & ~y_true).sum() + cost_fn * (~flag & y_true).sum())
 
 
 def confusion(y_true, flag) -> dict:
@@ -19,15 +19,15 @@ def confusion(y_true, flag) -> dict:
                 fn=int((~flag & y_true).sum()), tn=int((~flag & ~y_true).sum()))
 
 
-def cost_optimal_threshold(y_true, score) -> float:
-    """Threshold minimising the official cost on (y_true, score); ties take the larger threshold."""
+def cost_optimal_threshold(y_true, score, cost_fp: int = COST_FP, cost_fn: int = COST_FN) -> float:
+    """Threshold minimising the cost (official by default) on (y_true, score); ties take the larger threshold."""
     y_true, score = np.asarray(y_true).astype(bool), np.asarray(score, dtype=float)
     order = np.argsort(-score, kind="mergesort")
     s, y = score[order], y_true[order]
     # Flag the top-k scores for k = 0..n; cost(k) = 10*FP(k) + 500*FN(k).
     fp = np.concatenate([[0], np.cumsum(~y)])
     fn = y.sum() - np.concatenate([[0], np.cumsum(y)])
-    costs = COST_FP * fp + COST_FN * fn
+    costs = cost_fp * fp + cost_fn * fn
     distinct = np.concatenate([[True], s[1:] != s[:-1], [True]])  # cut only between distinct scores
     valid = np.flatnonzero(distinct)
     k = valid[np.argmin(costs[valid])]
